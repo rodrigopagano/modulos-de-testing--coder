@@ -22,12 +22,26 @@ const loggerTest = require('./controller/controller.logger');
 const { logger } = require('winston');
 if (MONGODBURL) import('./config/configDB');
 const cookie = require('cookie-parser');
+const swaggerJSdoc = require('swagger-jsdoc');
+const swaggerUIexpress = require('swagger-ui-express');
 
 
 const httpServer = server.listen(PORT, () => 
  Logger.debug(` Server started on port http://localhost:${PORT}`),
 )
+const swaggerOptions = {
+    definition:{
+        openapi:'3.0.1',
+        info:{
+            title:'documentacion necesaria',
+            description:'desafio documentacion API',
+        }
+    },
+    apis:[`${__dirname}/docs/**/*.yaml`]
+}
 
+const specs = swaggerJSdoc(swaggerOptions);
+server.use('/apidocs',swaggerUIexpress.serve,swaggerUIexpress.setup(specs))
 
 
 server.engine('handlebars', handlebars.engine());
